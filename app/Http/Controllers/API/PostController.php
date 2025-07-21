@@ -12,26 +12,6 @@ use Illuminate\Support\Facades\Log;
 class PostController extends Controller
 {
     /**
-     * Add CORS headers to response
-     */
-    private function addCorsHeaders($response)
-    {
-        return $response
-            ->header('Access-Control-Allow-Origin', '*')
-            ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-            ->header('Access-Control-Allow-Headers', 'Content-Type, Accept, Authorization, X-Requested-With');
-    }
-
-    /**
-     * Handle preflight OPTIONS requests
-     */
-    public function options()
-    {
-        $response = response()->json([], 200);
-        return $this->addCorsHeaders($response);
-    }
-
-    /**
      * Display a listing of the resource.
      */
     public function index()
@@ -39,21 +19,17 @@ class PostController extends Controller
         try {
             $posts = Post::latest()->get();
 
-            $response = response()->json([
+            return response()->json([
                 'status' => 'success',
                 'message' => 'Posts retrieved successfully',
                 'data' => $posts
             ], 200);
-
-            return $this->addCorsHeaders($response);
         } catch (\Exception $e) {
-            $response = response()->json([
+            return response()->json([
                 'status' => 'error',
                 'message' => 'Failed to retrieve posts',
                 'error' => $e->getMessage()
             ], 500);
-
-            return $this->addCorsHeaders($response);
         }
     }
 
@@ -70,13 +46,11 @@ class PostController extends Controller
             ]);
 
             if ($validator->fails()) {
-                $response = response()->json([
+                return response()->json([
                     'status' => 'error',
                     'message' => 'Validation failed',
                     'errors' => $validator->errors()
                 ], 422);
-                
-                return $this->addCorsHeaders($response);
             }
 
             $postData = [
@@ -98,21 +72,18 @@ class PostController extends Controller
 
             $post = Post::create($postData);
 
-            $response = response()->json([
+            return response()->json([
                 'status' => 'success',
                 'message' => 'Post created successfully',
                 'data' => $post
             ], 201);
 
-            return $this->addCorsHeaders($response);
         } catch (\Exception $e) {
-            $response = response()->json([
+            return response()->json([
                 'status' => 'error',
                 'message' => 'Failed to create post',
                 'error' => $e->getMessage()
             ], 500);
-
-            return $this->addCorsHeaders($response);
         }
     }
 
@@ -125,29 +96,24 @@ class PostController extends Controller
             $post = Post::find($id);
 
             if (!$post) {
-                $response = response()->json([
+                return response()->json([
                     'status' => 'error',
                     'message' => 'Post not found'
                 ], 404);
-                
-                return $this->addCorsHeaders($response);
             }
 
-            $response = response()->json([
+            return response()->json([
                 'status' => 'success',
                 'message' => 'Post retrieved successfully',
                 'data' => $post
             ], 200);
 
-            return $this->addCorsHeaders($response);
         } catch (\Exception $e) {
-            $response = response()->json([
+            return response()->json([
                 'status' => 'error',
                 'message' => 'Failed to retrieve post',
                 'error' => $e->getMessage()
             ], 500);
-
-            return $this->addCorsHeaders($response);
         }
     }
 
@@ -169,12 +135,10 @@ class PostController extends Controller
             $post = Post::find($id);
 
             if (!$post) {
-                $response = response()->json([
+                return response()->json([
                     'status' => 'error',
                     'message' => 'Post not found'
                 ], 404);
-                
-                return $this->addCorsHeaders($response);
             }
 
             $validator = Validator::make($request->all(), [
@@ -186,13 +150,11 @@ class PostController extends Controller
             if ($validator->fails()) {
                 Log::error('Validation failed', ['errors' => $validator->errors()->toArray()]);
                 
-                $response = response()->json([
+                return response()->json([
                     'status' => 'error',
                     'message' => 'Validation failed',
                     'errors' => $validator->errors()
                 ], 422);
-                
-                return $this->addCorsHeaders($response);
             }
 
             $updateData = [];
@@ -224,21 +186,18 @@ class PostController extends Controller
 
             $post->update($updateData);
 
-            $response = response()->json([
+            return response()->json([
                 'status' => 'success',
                 'message' => 'Post updated successfully',
                 'data' => $post->fresh()
             ], 200);
 
-            return $this->addCorsHeaders($response);
         } catch (\Exception $e) {
-            $response = response()->json([
+            return response()->json([
                 'status' => 'error',
                 'message' => 'Failed to update post',
                 'error' => $e->getMessage()
             ], 500);
-
-            return $this->addCorsHeaders($response);
         }
     }
 
@@ -251,12 +210,10 @@ class PostController extends Controller
             $post = Post::find($id);
 
             if (!$post) {
-                $response = response()->json([
+                return response()->json([
                     'status' => 'error',
                     'message' => 'Post not found'
                 ], 404);
-                
-                return $this->addCorsHeaders($response);
             }
 
             // Delete associated image if exists
@@ -266,20 +223,17 @@ class PostController extends Controller
 
             $post->delete();
 
-            $response = response()->json([
+            return response()->json([
                 'status' => 'success',
                 'message' => 'Post deleted successfully'
             ], 200);
 
-            return $this->addCorsHeaders($response);
         } catch (\Exception $e) {
-            $response = response()->json([
+            return response()->json([
                 'status' => 'error',
                 'message' => 'Failed to delete post',
                 'error' => $e->getMessage()
             ], 500);
-
-            return $this->addCorsHeaders($response);
         }
     }
 }
