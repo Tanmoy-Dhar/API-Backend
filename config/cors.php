@@ -21,7 +21,7 @@ return [
         'http://localhost:5173',  // Vite dev server (HTTP)
         'https://localhost:5173', // Vite dev server (HTTPS if configured)
         'http://127.0.0.1:5173',  // Alternative localhost
-        'https://127.0.0.1:5173'  // Alternative localhost (HTTPS)
+        'https://127.0.0.1:5173', // Alternative localhost (HTTPS)
     ],
 
     'allowed_origins_patterns' => [],

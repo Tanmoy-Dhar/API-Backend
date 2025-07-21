@@ -16,9 +16,11 @@ Route::post('login', [AuthController::class, 'login']);
 Route::options('posts', [PostController::class, 'options']);
 Route::options('posts/{id}', [PostController::class, 'options']);
 
-// Public routes for testing - remove auth:sanctum temporarily
-Route::apiResource('posts', PostController::class);
-
+// Protected routes - require authentication
 Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('posts', PostController::class);
     Route::post('logout', [AuthController::class, 'logout']);
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
 });
